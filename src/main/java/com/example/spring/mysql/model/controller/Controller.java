@@ -4,9 +4,7 @@ package com.example.spring.mysql.model.controller;
 
 import com.example.spring.mysql.model.persistent.*;
 //import com.example.spring.mysql.repository.CategoryRepository;
-import com.example.spring.mysql.repository.CategoryContentRepository;
-import com.example.spring.mysql.repository.CategoryRepository;
-import com.example.spring.mysql.repository.ContentRepository;
+import com.example.spring.mysql.repository.*;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,14 +20,20 @@ public class Controller {
     private final ContentRepository contentRepository;
     private final CategoryRepository categoryRepository;
     private final CategoryContentRepository categoryContentRepository;
+    private final ScreenRepository screenRepository;
+    private final ScreenCategoryRepository screenCategoryRepository;
 
     public Controller(ContentRepository contentRepository,
                       CategoryRepository categoryRepository,
-                      CategoryContentRepository categoryContentRepository
+                      CategoryContentRepository categoryContentRepository,
+                      ScreenRepository screenRepository,
+                      ScreenCategoryRepository screenCategoryRepository
     ) {
         this.contentRepository = contentRepository;
         this.categoryRepository = categoryRepository;
         this.categoryContentRepository = categoryContentRepository;
+        this.screenRepository = screenRepository;
+        this.screenCategoryRepository = screenCategoryRepository;
     }
 
     @GetMapping("/contents")
@@ -77,5 +81,32 @@ public class Controller {
         categoryContent.setSequenceNo(1);
         CategoryContent save = categoryContentRepository.save(categoryContent);
         System.out.println(save);
+    }
+
+    @GetMapping("/screens")
+    public void setScreen() {
+        Screen screen = new Screen();
+        screen.setName("Home");
+        Screen save = screenRepository.save(screen);
+        System.out.println(save);
+    }
+
+    @GetMapping("/screen-categories")
+    public void setScreenCategory() {
+        ScreenCategory screenCategory = new ScreenCategory();
+        Screen screen = screenRepository.getOne((long) 5);
+        screenCategory.setScreen(screen);
+
+        Category category = categoryRepository.getOne((long) 4);
+        screenCategory.setCategory(category);
+
+        ScreenCategoryId screenCategoryId = new ScreenCategoryId();
+        screenCategoryId.setCategoryId(category.getId());
+        screenCategoryId.setScreenId(screen.getId());
+        screenCategory.setScreenCategoryId(screenCategoryId);
+
+        ScreenCategory save = screenCategoryRepository.save(screenCategory);
+        System.out.println(save);
+
     }
 }

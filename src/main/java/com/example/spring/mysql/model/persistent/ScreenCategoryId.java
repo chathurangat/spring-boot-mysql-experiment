@@ -13,6 +13,6 @@ public class ScreenCategoryId implements Serializable {
     @Column(name = "category")
     private Long categoryId;
 
-    @Column(name = "content")
-    private Long contentId;
+    @Column(name = "screen")
+    private Long screenId;
 }
