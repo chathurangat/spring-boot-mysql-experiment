@@ -1,30 +1,26 @@
 package com.example.spring.mysql.model.persistent;
 
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
 
 @Data
-@Entity(name = "CategoryContent")
-@Table(name = "category_content")
+@Entity
+@Table(name = "category_contents")
+@IdClass(CategoryContentId.class)
 public class CategoryContent implements Serializable {
 
-    @EmbeddedId
-    private CategoryContentId categoryContentId;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @Id
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id", referencedColumnName = "id")
     private Category category;
-    @ManyToOne(fetch = FetchType.LAZY)
+
+    @Id
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "content_id", referencedColumnName = "id")
     private Content content;
-    private Integer sequenceNo;
 
-/*    public CategoryContent() {
-    }
-
-    public CategoryContent(Category category, Content content) {
-        this.category = category;
-        this.content = content;
-    }*/
+    @Column(name = "sequence_no")
+    private Long sequenceNo;
 }

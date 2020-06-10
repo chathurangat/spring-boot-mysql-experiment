@@ -2,14 +2,13 @@ package com.example.spring.mysql.model.persistent;
 
 import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 
 @Data
 @Entity
+@Table(name = "screens")
 public class Screen implements Serializable {
 
     @Id
@@ -17,4 +16,7 @@ public class Screen implements Serializable {
     private Long id;
 
     private String name;
+
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "screen")
+    private List<ScreenCategory> screenCategories;
 }

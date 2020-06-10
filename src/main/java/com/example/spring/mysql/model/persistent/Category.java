@@ -1,15 +1,13 @@
 package com.example.spring.mysql.model.persistent;
 
-import com.sun.istack.NotNull;
-import com.sun.istack.Nullable;
 import lombok.Data;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
 
 @Data
 @Entity
+@Table(name = "category")
 public class Category implements Serializable {
 
     @Id
@@ -18,7 +16,6 @@ public class Category implements Serializable {
 
     private String name;
 
-/*    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-    private List<CategoryContent> categoryContents;*/
-
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "category")
+    private List<ScreenCategory> screenCategories;
 }
