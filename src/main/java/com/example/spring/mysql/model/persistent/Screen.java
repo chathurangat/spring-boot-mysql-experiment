@@ -1,7 +1,6 @@
 package com.example.spring.mysql.model.persistent;
 
 import lombok.Data;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;

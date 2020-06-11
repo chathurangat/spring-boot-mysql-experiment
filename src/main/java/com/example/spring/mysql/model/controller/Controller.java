@@ -5,6 +5,7 @@ import com.example.spring.mysql.model.persistent.Category;
 import com.example.spring.mysql.model.persistent.*;
 import com.example.spring.mysql.model.response.HomeScreenResponse;
 import com.example.spring.mysql.repository.*;
+import com.example.spring.mysql.service.DomainService;
 import com.example.spring.mysql.transformer.ScreenResponseGenerator;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,19 +27,22 @@ public class Controller {
     private final ScreenRepository screenRepository;
     private final ScreenCategoryRepository screenCategoryRepository;
     private final ScreenResponseGenerator screenResponseGenerator;
+    private final DomainService domainService;
 
     public Controller(ContentRepository contentRepository,
                       CategoryRepository categoryRepository,
                       CategoryContentRepository categoryContentRepository,
                       ScreenRepository screenRepository,
                       ScreenCategoryRepository screenCategoryRepository,
-                      ScreenResponseGenerator screenResponseGenerator) {
+                      ScreenResponseGenerator screenResponseGenerator,
+                      DomainService domainService) {
         this.contentRepository = contentRepository;
         this.categoryRepository = categoryRepository;
         this.categoryContentRepository = categoryContentRepository;
         this.screenRepository = screenRepository;
         this.screenCategoryRepository = screenCategoryRepository;
         this.screenResponseGenerator = screenResponseGenerator;
+        this.domainService = domainService;
     }
 
     @GetMapping("/contents")
@@ -159,6 +163,23 @@ public class Controller {
         categories.parallelStream().map(category ->
                 categoryContentRepository.findAllByCategory(category, Sort.by(Sort.Direction.ASC, "sequenceNo"))
         ).forEachOrdered(categoryContents::addAll);
+
+        return screenResponseGenerator.generate3(screens, categoryContents, homeScreen.getId());
+    }
+
+
+    @GetMapping("/cache")
+    public HomeScreenResponse getHomeScreenWithCachedQueries() {
+
+        List<Screen> screens = domainService.findAllScreens("screen_cache");
+        Screen homeScreen = screens.parallelStream().filter(screen -> screen.getName().equals("Home")).findFirst().get();
+        List<ScreenCategory> screenCategories = screenCategoryRepository.findAllByScreen(homeScreen, Sort.by(Sort.Direction.ASC, "sequenceNo"));
+        List<Category> categories = screenCategories.parallelStream().map(ScreenCategory::getCategory).collect(Collectors.toList());
+        List<CategoryContent> categoryContents = new ArrayList<>();
+
+        categories.parallelStream()
+                .map(domainService::getScreenCategoriesByScreen)
+                .forEachOrdered(categoryContents::addAll);
 
         return screenResponseGenerator.generate3(screens, categoryContents, homeScreen.getId());
     }
