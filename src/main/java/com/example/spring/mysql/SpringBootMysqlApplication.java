@@ -21,13 +21,13 @@ public class SpringBootMysqlApplication {
 		SpringApplication.run(SpringBootMysqlApplication.class, args);
 	}
 
-	@Bean
-	public CacheManager cacheManager() {
-//		return new ConcurrentMapCacheManager("queryCache");
-		SimpleCacheManager cacheManager = new SimpleCacheManager();
-		List<Cache> cacheList = new ArrayList<>();
-		cacheList.add(new ConcurrentMapCache("queryCache"));
-		cacheManager.setCaches(cacheList);
-		return cacheManager;
-	}
+//	@Bean
+//	public CacheManager cacheManager() {
+////		return new ConcurrentMapCacheManager("queryCache");
+//		SimpleCacheManager cacheManager = new SimpleCacheManager();
+//		List<Cache> cacheList = new ArrayList<>();
+//		cacheList.add(new ConcurrentMapCache("queryCache"));
+//		cacheManager.setCaches(cacheList);
+//		return cacheManager;
+//	}
 }
