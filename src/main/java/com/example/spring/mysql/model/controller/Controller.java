@@ -126,6 +126,7 @@ public class Controller {
         categories.parallelStream().map(category ->
                 categoryContentRepository.findAllByCategory(category, Sort.by(Sort.Direction.ASC, "sequenceNo"))
         ).forEachOrdered(categoryContents::addAll);
+
         return screenResponseGenerator.generate(screens, categoryContents, homeScreen.getId());
     }
 
@@ -133,14 +134,32 @@ public class Controller {
     public HomeScreenResponse getHomeScreenWithoutParallelStream() {
 
         List<Screen> screens = screenRepository.findAll();
-        Screen homeScreen = screens.parallelStream().filter(screen -> screen.getName().equals("Home")).findFirst().get();
+        Screen homeScreen = screens.stream().filter(screen -> screen.getName().equals("Home")).findFirst().get();
         List<ScreenCategory> screenCategories = screenCategoryRepository.findAllByScreen(homeScreen, Sort.by(Sort.Direction.ASC, "sequenceNo"));
-        List<Category> categories = screenCategories.parallelStream().map(ScreenCategory::getCategory).collect(Collectors.toList());
+        List<Category> categories = screenCategories.stream().map(ScreenCategory::getCategory).collect(Collectors.toList());
         List<CategoryContent> categoryContents = new ArrayList<>();
 
         categories.stream().map(category ->
                 categoryContentRepository.findAllByCategory(category, Sort.by(Sort.Direction.ASC, "sequenceNo"))
         ).forEachOrdered(categoryContents::addAll);
-        return screenResponseGenerator.generate(screens, categoryContents, homeScreen.getId());
+
+        return screenResponseGenerator.generate2(screens, categoryContents, homeScreen.getId());
+    }
+
+
+    @GetMapping("/home-screens3")
+    public HomeScreenResponse getHomeScreenMixBothStreams() {
+
+        List<Screen> screens = screenRepository.findAll();
+        Screen homeScreen = screens.parallelStream().filter(screen -> screen.getName().equals("Home")).findFirst().get();
+        List<ScreenCategory> screenCategories = screenCategoryRepository.findAllByScreen(homeScreen, Sort.by(Sort.Direction.ASC, "sequenceNo"));
+        List<Category> categories = screenCategories.parallelStream().map(ScreenCategory::getCategory).collect(Collectors.toList());
+        List<CategoryContent> categoryContents = new ArrayList<>();
+
+        categories.parallelStream().map(category ->
+                categoryContentRepository.findAllByCategory(category, Sort.by(Sort.Direction.ASC, "sequenceNo"))
+        ).forEachOrdered(categoryContents::addAll);
+
+        return screenResponseGenerator.generate3(screens, categoryContents, homeScreen.getId());
     }
 }
