@@ -17,6 +17,7 @@ public class Screen implements Serializable {
 
     private String name;
 
+    @OrderBy("sequenceNo")
     @OneToMany(fetch = FetchType.LAZY,mappedBy = "screen")
     private List<ScreenCategory> screenCategories;
 }
