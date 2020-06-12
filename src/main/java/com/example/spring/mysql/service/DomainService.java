@@ -24,8 +24,7 @@ public class DomainService {
 
     @Cacheable(cacheNames = "queryCache", key = "#name")
     public List<Screen> findAllScreens(String name) {
-        System.out.println("============accesss from database");
-        return screenRepository.findAll();
+       return screenRepository.findAll();
     }
 
     @Cacheable(cacheNames = "queryCache", key = "#category.id")
