@@ -173,7 +173,7 @@ public class Controller {
 
         List<Screen> screens = domainService.findAllScreens("screen_cache");
         Screen homeScreen = screens.parallelStream().filter(screen -> screen.getName().equals("Home")).findFirst().get();
-        List<ScreenCategory> screenCategories = screenCategoryRepository.findAllByScreen(homeScreen, Sort.by(Sort.Direction.ASC, "sequenceNo"));
+        List<ScreenCategory> screenCategories = domainService.getScreenCategories(homeScreen);
         List<Category> categories = screenCategories.parallelStream().map(ScreenCategory::getCategory).collect(Collectors.toList());
         List<CategoryContent> categoryContents = new ArrayList<>();
 
